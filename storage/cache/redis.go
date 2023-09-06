@@ -553,14 +553,14 @@ func decodeCategories(s string) ([]string, error) {
 	return categories, nil
 }
 
-// escape -:.
-func escape(s string) string {
-	r := strings.NewReplacer(
-		"-", "\\-",
-		":", "\\:",
-		".", "\\.",
-		"/", "\\/",
-		"+", "\\+",
-	)
-	return r.Replace(s)
+// 特殊字符列表
+var specialChars = []string{" ", "(", ")", "+", "-", "|", "\"", "#", "&", "!", "~", "<", ">", "{", "}", "[", "]", "?", ":", "/"}
+
+// EscapeRedisearchQuery 用于转义 Redisearch 查询中的特殊字符
+func escape(query string) string {
+	escaped := query
+	for _, char := range specialChars {
+		escaped = strings.ReplaceAll(escaped, char, "\\"+char)
+	}
+	return escaped
 }
